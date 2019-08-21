@@ -24,7 +24,7 @@ from keras.optimizers import SGD, Adadelta
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
 from sklearn import metrics
-from sklearn import *
+# from sklearn import *
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split, KFold
 # import theano
@@ -69,8 +69,8 @@ def plot_history(history):
 
 # In[3]:
 
-
-with open('Data/AG_News/agNews_labels.txt',encoding='utf-8') as f:
+labelFilePath = os.path.join(os.path.abspath('.'),'Data/AG_News/agNews_labels.txt')
+with open(labelFilePath,encoding='utf-8') as f:
     labels = f.read().splitlines()
 
 labels = list(map(int, labels))
@@ -91,15 +91,14 @@ max_word_cnt = 20000
 Classes = 4
 DROP_OUT = 0.3
 BATCH_SIZE = 50
-EPOCH = 10
+EPOCH = 1
 optimizer="adam"
 loss="categorical_crossentropy"
 
-GLOVE_DIR = '../glove.6B/'
+GLOVE_DIR = os.path.join(os.path.abspath('.'),'glove.6B')
+# GLOVE_DIR = '../glove.6B/'
 FILENAME = 'glove.6B.' + str(EMBEDDING_DIM) + 'd.txt'
 
-
-# ---------------------
 
 # ---------------------
 
@@ -260,152 +259,3 @@ print("F1 score (weighted):  %f" % f1_score(test_Y_class, test_Y_predClass, aver
 
 
 # ----------------------
-
-# ----------------------
-
-# # #### With Knowledge
-
-# # In[5]:
-
-
-# with open('Data/AG_News/agNews_with_knowledge_nw.txt',encoding='utf-8') as f:
-#     texts_with_knowledge = f.read().splitlines()
-
-
-# # In[6]:
-
-
-# print('Found %s texts.' % len(texts_with_knowledge))
-# global word_index, tokenizer
-
-# tokenizer = Tokenizer(num_words=max_word_cnt)
-# tokenizer.fit_on_texts(texts_with_knowledge)
-# sequences = tokenizer.texts_to_sequences(texts_with_knowledge)
-
-# word_index = tokenizer.word_index
-# print('Found %s unique tokens.' % len(word_index))
-
-# data = pad_sequences(sequences, maxlen=max_seq_length)
-
-# print('Shape of data tensor:', data.shape)
-# print('Shape of label tensor:', labels.shape)
-
-
-# # In[7]:
-
-
-# global embeddings_index 
-# embeddings_index = {}
-# fname = os.path.join(GLOVE_DIR, FILENAME)
-# f = open(fname, encoding="utf8")
-# for line in f:
-#     values = line.split()
-#     word = values[0]
-#     coefs = np.asarray(values[1:], dtype='float32')
-#     embeddings_index[word] = coefs
-# f.close()
-
-# print('Found %s word vectors.' % len(embeddings_index))
-
-
-# # In[8]:
-
-
-# print('Preparing embedding matrix.')
-# words_nb = min(max_word_cnt, len(word_index))
-# embedding_matrix = np.zeros((words_nb + 1, EMBEDDING_DIM))
-# for word, i in word_index.items():
-#     if i > max_word_cnt:
-#         continue
-#     embedding_vector = embeddings_index.get(word)
-#     if embedding_vector is not None:
-#         embedding_matrix[i] = embedding_vector
-
-
-# # In[9]:
-
-
-# embedding_matrix.shape
-
-
-# # In[10]:
-
-
-# def create_LSTM_model():
-#     print('Number of class: %d' % (Classes))
-#     model = Sequential()
-#     model.add(Embedding( 
-#         input_length=max_seq_length,name = "embedding_layer",
-#         weights=[embedding_matrix],input_dim=words_nb + 1,                   
-#         output_dim= EMBEDDING_DIM,trainable=False))
-    
-#     model.add(LSTM(128, name="lstm_layer", recurrent_dropout=DROP_OUT, dropout=DROP_OUT))
-#     model.add(Dense(Classes, name = "dense_one" ,activation = 'sigmoid'))
-    
-#     model.compile(loss='categorical_crossentropy',
-#                   optimizer='adam',
-#                   metrics=['accuracy'])
-    
-#     return model
-
-
-# # In[11]:
-
-
-# model = None 
-# model = create_LSTM_model()
-
-# train_X, test_X, train_Y, test_Y = train_test_split(data, labels, test_size=VALIDATION_SPLIT ) 
-# model.summary()
-
-
-# # In[12]:
-
-
-# print(train_X.shape)
-# print(test_X.shape)
-# print(train_Y.shape)
-# print(test_Y.shape)
-
-
-# # In[13]:
-
-
-# history = model.fit(train_X, train_Y, validation_split=VALIDATION_SPLIT, epochs=EPOCH, 
-#                     batch_size=BATCH_SIZE) 
-
-# training_loss, training_accuracy = model.evaluate(train_X, train_Y)
-# print ("Training Loss: ", training_loss)
-# print ("Training Accuracy: ", training_accuracy)
-
-# eval_loss, eval_accuracy = model.evaluate(test_X, test_Y)
-# print ("Testing Loss: ", eval_loss)
-# print ("Testing Accuracy: ", eval_accuracy)
-
-# model_history = history.history
-
-
-# # In[14]:
-
-
-# plot_history(model_history)
-
-
-# # In[15]:
-
-
-# test_Y_predProb = model.predict(test_X, verbose=0)
-# test_Y_predClass = np.argmax(test_Y_predProb,axis=1)
-# test_Y_class = np.argmax(test_Y,axis=1)
-
-
-# # In[16]:
-
-
-# print("Precision (macro): %f" % precision_score(test_Y_class, test_Y_predClass, average='macro'))
-# print("Recall (macro):    %f" % recall_score(test_Y_class, test_Y_predClass, average='macro'))
-# print("F1 score (macro):  %f" % f1_score(test_Y_class, test_Y_predClass, average='macro'), end='\n\n')
-# print("Precision (weighted): %f" % precision_score(test_Y_class, test_Y_predClass, average='weighted'))
-# print("Recall (weighted):    %f" % recall_score(test_Y_class, test_Y_predClass, average='weighted'))
-# print("F1 score (weighted):  %f" % f1_score(test_Y_class, test_Y_predClass, average='weighted'))
-
