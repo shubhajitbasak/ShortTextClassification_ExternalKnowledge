@@ -107,6 +107,11 @@ def get_dbpedia_data(text,confidence):
 
 ################################################################################################
 
+
+# Source :
+#  https://skymind.ai/wiki/open-datasets
+#  https://drive.google.com/drive/u/0/folders/0Bz8a_Dbh9Qhbfll6bVpmNUtUcFdjYmF2SEpmZUZUcVNiMUw1TWN6RDV3a0JHT3kxLVhVR2M
+
 data_ag_news = pd.read_csv("Data/AGNews/train.csv", header = None)
 data_ag_news = shuffle(data_ag_news,random_state=20)
 data_ag_news_new = data_ag_news.iloc[0:20000]
@@ -147,6 +152,9 @@ myfile.close()
 
 ######################################################################################## 
 
+# Source :
+
+# https://www.kaggle.com/rmisra/news-category-dataset/home
 
 # Read the data from json file
 textData = []
@@ -236,6 +244,12 @@ myfile.close()
 
 # Build the Yahoo Data from the Yahoo dataset
 
+# Source 
+# https://cogcomp.seas.upenn.edu/page/resource_view/89
+
+# Data and Code to read the data has been taken from :
+# https://github.com/irisliucy/Short-text-Classification/ 
+
 Classes = 10
 TEXT_DATA_DIR = 'Data/Yahoo/yahoo_' + str(Classes)
 
@@ -264,7 +278,7 @@ print('Found %s texts.' % len(texts))
 # Create the Augumented Data for Yahoo
 counter = 0
 texts_with_knowledge_yahoo = []
-for text in texts_kaggle:
+for text in texts:
     try:
         dbpedia_text = get_dbpedia_data(text,0.7)
         texts_with_knowledge_yahoo.append(dbpedia_text)
